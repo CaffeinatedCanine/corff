@@ -1,9 +1,10 @@
 require('dotenv').config();
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits, Events, InteractionType } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Events } = require("discord.js");
 
 const { handleFormSubmission } = require('./extension-form/handleFormSubmission');
+const { handleEditSubmission } = require('./extension-form/handleEditSubmission');
 const { handleNewMessage, handleButtonInteraction, checkForPastDueExtensions } = require('./extension-form/interactionHandler');
 
 const client = new Client({
@@ -53,7 +54,7 @@ async function handleCommand(interaction) {
 async function handleButton(interaction) {
     try {
         console.log(`[${new Date().toISOString()}] Button interaction: ${interaction.customId}`);
-        await handleButtonInteraction(interaction);
+        await handleButtonInteraction(interaction); // Delegate button handling to interactionHandler.js
     } catch (error) {
         console.error('Error handling button interaction:', error);
         await interaction.reply({ content: 'An error occurred while processing the button interaction.', flags: 64 });
@@ -64,7 +65,9 @@ async function handleModal(interaction) {
     try {
         console.log(`[${new Date().toISOString()}] Modal interaction: ${interaction.customId}`);
         if (interaction.customId === 'extensionForm') {
-            await handleFormSubmission(interaction);
+            await handleFormSubmission(interaction); // Handles form submission for extension requests
+        } else if (interaction.customId === 'edit_form') {
+            await handleEditSubmission(interaction); // Handles modal submission for editing requests
         } else {
             console.error('Unknown modal interaction:', interaction.customId);
             await interaction.reply({ content: 'Unknown modal interaction. Please contact support.', flags: 64 });
@@ -75,17 +78,19 @@ async function handleModal(interaction) {
     }
 }
 
-client.on("interactionCreate", async (interaction) => {
+client.on('interactionCreate', async (interaction) => {
     try {
         if (interaction.isCommand()) {
             await handleCommand(interaction);
         } else if (interaction.isButton()) {
             await handleButton(interaction);
-        } else if (interaction.type === InteractionType.ModalSubmit) {
+        } else if (interaction.isModalSubmit()) {
             await handleModal(interaction);
+        } else {
+            console.log('Unknown interaction type:', interaction.type);
         }
     } catch (error) {
-        console.error('Error handling interaction:', error);
+        console.error('Error handling interaction:', error.message);
         if (!interaction.replied && !interaction.deferred) {
             await interaction.reply({ content: 'An error occurred while processing your request.', flags: 64 });
         }
@@ -97,11 +102,11 @@ client.once(Events.ClientReady, async () => {
     console.log('Bot is ready!');
 
     setInterval(() => {
-        checkForPastDueExtensions(client);
-    }, 60 * 60 * 1000); // 1 hour interval
+        checkForPastDueExtensions(client); // Delegates periodic processing to interactionHandler.js
+    }, 60 * 60 * 1000); // 1-hour interval
 });
 
 // Handle new messages
-client.on('messageCreate', handleNewMessage);
+client.on('messageCreate', handleNewMessage); // Directly delegate message handling to interactionHandler.js
 
 client.login(process.env.TOKEN);

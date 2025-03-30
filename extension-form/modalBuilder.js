@@ -1,4 +1,4 @@
-const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder } = require('discord.js');
+const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 // Function to get tomorrow's date in YYYY-MM-DD format
 function getTomorrowDate() {
@@ -41,13 +41,12 @@ function createExtensionFormModal() {
                 .setRequired(true)
         ),
         new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder() // Dropdown menu for contact preference
-                .setCustomId('contactPreference')
-                .setPlaceholder('Select Contact Preference')
-                .addOptions(
-                    { label: 'Email', value: 'email' },
-                    { label: 'Discord', value: 'discord' }
-                )
+            new TextInputBuilder()
+                .setCustomId('preference') 
+                .setLabel('Contact Preference (Email or Discord)')
+                .setPlaceholder('Email | Discord')
+                .setStyle(TextInputStyle.Short) // Users input "Email" or "Discord"
+                .setRequired(true)
         )
     );
 
