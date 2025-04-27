@@ -44,37 +44,67 @@ async function handleCommand(interaction) {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {
+        // Only defer if the command requires long processing
+        if (command.requiresDefer) {
+            await interaction.deferReply({ flags: 64 }); // Prevent timeout
+        }
         await command.execute(interaction);
     } catch (error) {
         console.error('Error executing command:', error);
-        await interaction.reply({ content: 'An error occurred while executing the command.', flags: 64 });
+        if (!interaction.replied) {
+            await interaction.reply({
+                content: 'An error occurred while executing the command.',
+                flags: 64,
+            });
+        }
     }
 }
 
 async function handleButton(interaction) {
     try {
         console.log(`[${new Date().toISOString()}] Button interaction: ${interaction.customId}`);
+
+        // Only defer if the button interaction involves asynchronous operations
+        if (interaction.customId.startsWith('update:') || interaction.customId.startsWith('status_')) {
+            await interaction.deferReply({ flags: 64 });
+        }
+
         await handleButtonInteraction(interaction); // Delegate button handling to interactionHandler.js
     } catch (error) {
         console.error('Error handling button interaction:', error);
-        await interaction.reply({ content: 'An error occurred while processing the button interaction.', flags: 64 });
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({
+                content: 'An error occurred while processing the button interaction.',
+                flags: 64,
+            });
+        }
     }
 }
 
 async function handleModal(interaction) {
     try {
         console.log(`[${new Date().toISOString()}] Modal interaction: ${interaction.customId}`);
+
+        // Modal interactions don't need deferred replies
         if (interaction.customId === 'extensionForm') {
             await handleFormSubmission(interaction); // Handles form submission for extension requests
         } else if (interaction.customId === 'edit_form') {
             await handleEditSubmission(interaction); // Handles modal submission for editing requests
         } else {
             console.error('Unknown modal interaction:', interaction.customId);
-            await interaction.reply({ content: 'Unknown modal interaction. Please contact support.', flags: 64 });
+            await interaction.reply({
+                content: 'Unknown modal interaction. Please contact support.',
+                flags: 64,
+            });
         }
     } catch (error) {
         console.error('Error handling modal interaction:', error);
-        await interaction.reply({ content: 'An error occurred while processing the modal interaction.', flags: 64 });
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({
+                content: 'An error occurred while processing the modal interaction.',
+                flags: 64,
+            });
+        }
     }
 }
 
@@ -92,7 +122,10 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
         console.error('Error handling interaction:', error.message);
         if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({ content: 'An error occurred while processing your request.', flags: 64 });
+            await interaction.reply({
+                content: 'An error occurred while processing your request.',
+                flags: 64,
+            });
         }
     }
 });
