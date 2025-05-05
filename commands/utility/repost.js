@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { PermissionFlagsBits } = require("discord-api-types/v10");
 const { fetchExtensionData } = require('../../services/sheetService');
 const buildEmbed = require('../../components/buildEmbed');
 const buildButtons = require('../../components/buildButtons');
@@ -12,8 +13,10 @@ module.exports = {
       opt.setName('id')
         .setDescription('The unique ID of the extension request.')
         .setRequired(true)
-    ),
-
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDMPermission(false),
+    
   async execute(interaction) {
     const config = getServerConfig(interaction.guildId);
     if (!config) {

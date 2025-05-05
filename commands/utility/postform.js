@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { PermissionFlagsBits } = require("discord-api-types/v10");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
   EmbedBuilder,
@@ -10,7 +11,9 @@ const {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('postform')
-    .setDescription('Post the static extension request form'),
+    .setDescription('Post the static extension request form')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setDMPermission(false),
 
   async execute(interaction) {
     const channel = interaction.channel;
