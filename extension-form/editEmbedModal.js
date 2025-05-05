@@ -1,37 +1,34 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const axios = require('axios');
+const getServerConfig = require('../utils/getServerConfig');
+const { logInfo, logError } = require('../utils/logger');
+const formatDate = require('../utils/formatDate');
 
-async function createEditEmbedModal(uniqueId) {
+async function createEditEmbedModal(uniqueId, guildId) {
     try {
-        // Fetch data from the API using the uniqueId
-        const apiURL = process.env.API_URL;
-        const response = await axios.get(apiURL);
+        const config = getServerConfig(guildId);
+        if (!config || !config.apiUrl) throw new Error(`Missing config or apiUrl for guild ID: ${guildId}`);
+
+        const response = await axios.get(config.apiUrl);
         const entryArray = response.data;
 
-        console.log(`Fetched Data for uniqueId (${uniqueId}):`, entryArray);
+        logInfo(`Fetched Data for uniqueId (${uniqueId}): ${JSON.stringify(entryArray)}`);
 
-        // Find the correct entry in the array
         const entry = entryArray.find(row => row.uniqueId.toString() === uniqueId);
         if (!entry) throw new Error(`No data found for uniqueId: ${uniqueId}`);
 
-        // Extract editable fields
         const discord = entry.discord || '';
         const ao3 = entry.ao3 || '';
         const email = entry.email || '';
-        const extensionDate = entry.extensionDate && !isNaN(Date.parse(entry.extensionDate))
-            ? new Date(entry.extensionDate).toISOString().split('T')[0] // Convert to YYYY-MM-DD format
-            : ''; // Default to empty string if invalid
+        const extensionDate = formatDate(entry.extensionDate);
         const note = entry.note || '';
 
-        // Log extracted values for debugging
-        console.log('Parsed Data:', { discord, ao3, email, extensionDate, note });
+        logInfo(`Parsed Data: ${JSON.stringify({ discord, ao3, email, extensionDate, note })}`);
 
-        // Create the modal
         const modal = new ModalBuilder()
             .setCustomId('edit_form')
             .setTitle(`Edit Extension Request - ID: ${uniqueId}`);
 
-        // Add editable fields
         modal.addComponents(
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
@@ -77,8 +74,7 @@ async function createEditEmbedModal(uniqueId) {
 
         return modal;
     } catch (error) {
-        console.error('Error creating Edit modal:', error.message);
-        throw error;
+        logError(`Error creating Edit modal: ${error.message}`);
     }
 }
 

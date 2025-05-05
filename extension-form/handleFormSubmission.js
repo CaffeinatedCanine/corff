@@ -2,62 +2,72 @@ require('dotenv').config();
 const axios = require('axios');
 const { EmbedBuilder } = require('discord.js');
 
+const { logInfo, logError } = require('../utils/logger');
+const { safeReply } = require('../utils/safeReply');
+const formatDate = require('../utils/formatDate');
+const getServerConfig = require('../utils/getServerConfig');
+
 async function handleFormSubmission(interaction) {
-    try {
-        const discordName = interaction.user.username;
-        const ao3Handle = interaction.fields.getTextInputValue('ao3Handle');
-        const email = interaction.fields.getTextInputValue('email');
-        const extensionDate = interaction.fields.getTextInputValue('extensionDate');
-        const preference = interaction.fields.getTextInputValue('preference');
+	try {
+		const guildId = interaction.guildId;
+		const config = getServerConfig(guildId);
 
-        console.log('Form data:', { discordName, ao3Handle, email, extensionDate, preference });
+		if (!config?.apiUrl) {
+			logError(`Missing apiUrl config for guild ${guildId}`);
+			await safeReply(interaction, 'Server configuration is incomplete. Please contact a moderator.', true);
+			return;
+		}
 
-        await interaction.reply({ content: 'Form data received. Processing...', flags: 64 });
+		const discordName = interaction.user.username;
+		const ao3Handle = interaction.fields.getTextInputValue('ao3Handle');
+		const email = interaction.fields.getTextInputValue('email');
+		const extensionDateRaw = interaction.fields.getTextInputValue('extensionDate');
+		const extensionDate = formatDate(extensionDateRaw);
+		const preference = interaction.fields.getTextInputValue('preference');
 
-        // Prepare data for Google Sheets API request
-        const data = {
-            fromWhere: 'discord',
-            discord: discordName,
-            ao3: ao3Handle,
-            email: email,
-            extensionDate: extensionDate,
-            preference: preference,
-            status: 'Not Contacted',
-        };
+		logInfo(`Form data from ${discordName}: ${JSON.stringify({ ao3Handle, email, extensionDate, preference })}`);
 
-        const apiURL = process.env.API_URL;
+		await safeReply(interaction, 'Form data received. Processing...', true);
 
-        // Use axios to make the request
-        const response = await axios.post(apiURL, data);
-        const result = response.data;
+		const data = {
+			fromWhere: 'discord',
+			discord: discordName,
+			ao3: ao3Handle,
+			email,
+			extensionDate,
+			preference,
+			status: 'Not Contacted',
+		};
 
-        if (response.status === 200) {
-            // Create an embedded message to confirm submission
-            const embed = new EmbedBuilder()
-                .setTitle('Extension Request Submitted')
-                .addFields(
-                    { name: 'Discord', value: discordName, inline: true },
-                    { name: 'AO3 Handle', value: ao3Handle, inline: true },
-                    { name: 'Email', value: email, inline: true },
-                    { name: 'Extension To', value: extensionDate, inline: true },
-                    { name: 'Preference', value: preference, inline: true }
-                )
-                .setColor('#00FF00');
+		const response = await axios.post(config.apiUrl, data);
+		const result = response.data;
 
-            // Reply to the interaction with the embedded message
-            await interaction.editReply({ embeds: [embed], content: 'Request submitted successfully!', flags: 64 });
-        } else {
-            console.error('Error submitting form:', result);
-            await interaction.editReply({ content: 'There was an error submitting your request. Please try again later.', flags: 64 });
-        }
-    } catch (error) {
-        console.error('Error handling form submission:', error);
-        try {
-            await interaction.editReply({ content: 'There was an error processing your request. Please try again later.', flags: 64 });
-        } catch (editError) {
-            console.error('Error editing reply:', editError);
-        }
-    }
+		if (response.status === 200) {
+			const embed = new EmbedBuilder()
+				.setTitle('Extension Request Submitted')
+				.addFields(
+					{ name: 'Discord', value: discordName, inline: true },
+					{ name: 'AO3 Handle', value: ao3Handle, inline: true },
+					{ name: 'Email', value: email, inline: true },
+					{ name: 'Extension To', value: extensionDate, inline: true },
+					{ name: 'Preference', value: preference, inline: true }
+				)
+				.setColor('#00FF00');
+
+			await interaction.editReply({ embeds: [embed], content: 'Request submitted successfully!', flags: 64 });
+			logInfo(`Form submission successful for ${discordName}`);
+		} else {
+			logError(`Submission error response: ${JSON.stringify(result)}`);
+			await interaction.editReply({ content: 'There was an error submitting your request. Please try again later.', flags: 64 });
+		}
+	} catch (error) {
+		logError(`Error during form submission: ${error.message}`);
+		try {
+			await interaction.editReply({ content: 'There was an error processing your request. Please try again later.', flags: 64 });
+		} catch (editError) {
+			logError(`Edit reply failed: ${editError.message}`);
+		}
+	}
 }
 
 module.exports = { handleFormSubmission };
