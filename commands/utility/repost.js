@@ -4,6 +4,7 @@ const { fetchExtensionData } = require('../../services/sheetService');
 const buildEmbed = require('../../components/buildEmbed');
 const buildButtons = require('../../components/buildButtons');
 const getServerConfig = require('../../utils/getServerConfig');
+const { safeReply } = require('../../utils/safeReply'); 
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -20,7 +21,7 @@ module.exports = {
   async execute(interaction) {
     const config = getServerConfig(interaction.guildId);
     if (!config) {
-      return interaction.reply({ content: '❌ No configuration found for this server.', flags: 64 });
+      return safeReply(interaction, '❌ Missing server configuration. Please alert Fox or Enig.', true);
     }
 
     const uniqueId = interaction.options.getString('id');
