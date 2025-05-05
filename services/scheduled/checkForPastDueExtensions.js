@@ -9,12 +9,23 @@ async function checkForPastDueExtensions(client) {
 
   for (const [guildId, guild] of guilds) {
     const config = getServerConfig(guildId);
-    if (!config) continue;
+    if (!config) {
+      console.log(`⚠️ Guild ${guild.name} (${guildId}) does not have a server config. Skipping...`);
+      continue;
+    }
 
     const { channelId, modRoleId } = config;
     const data = await fetchExtensionData(guildId);
     const channel = client.channels.cache.get(channelId);
+
     if (!channel || channel.type !== ChannelType.GuildText) continue;
+
+    // Checks if there's any data in the gSheet
+    if (!data || data.length === 0) {
+      console.log(`ℹ️ No extension data found for guild ${guild.name} (${guildId}).`);
+      await channel.send('ℹ️ There are currently no extensions requests in the gSheet.');
+      continue;
+    }
 
     const now = new Date();
     const messages = await channel.messages.fetch({ limit: 100 });
@@ -36,7 +47,7 @@ async function checkForPastDueExtensions(client) {
       const currentStatus = entry.status?.toLowerCase().replace(/\s+/g, '');
       if (['pastdue', 'fulfilled', 'rejected'].includes(currentStatus)) continue;
 
-      const footerText = `ID: ${uniqueId} | Submitted through ${entry.fromWhere || 'unknown'} | ExtensionHook`;
+      const footerText = `ID: ${uniqueId} | Submitted through ${entry.fromWhere} | ExtensionHook`;
       const updatedEmbed = buildEmbed(entry, 'pastdue', footerText);
       const buttons = buildButtons(uniqueId, 'pastdue');
 

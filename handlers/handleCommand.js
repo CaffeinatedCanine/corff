@@ -6,7 +6,7 @@ module.exports = async function handleCommand(client, interaction, config) {
     if (command.requiresDefer) {
       await interaction.deferReply({ flags: 64 });
     }
-    // pass config into the individual commands
+    
     await command.execute(interaction, config);
   } catch (error) {
     console.error('Error executing command:', error);

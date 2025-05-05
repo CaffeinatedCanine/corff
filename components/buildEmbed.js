@@ -15,7 +15,6 @@ function buildEmbed(entry, statusKey, footerText) {
 
   const fields = [];
 
-  // Required fields
   fields.push(
     {
       name: 'Extension To',

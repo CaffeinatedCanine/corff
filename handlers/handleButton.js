@@ -13,13 +13,12 @@ module.exports = async function handleButton(client, interaction) {
 
   try {
     logInfo(`Button "${interaction.customId}" clicked in guild ${guildId}`);
-    // defer when necessary
+
     if (interaction.customId.startsWith('update:') ||
         interaction.customId.startsWith('status_')) {
       await interaction.deferReply({ flags: 64 });
     }
 
-    // pass config along in case your service needs webhookUrl, modRoleId, etc.
     await handleButtonInteraction(interaction, config);
 
   } catch (err) {

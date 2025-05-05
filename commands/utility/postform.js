@@ -54,7 +54,8 @@ module.exports = {
 
     } catch (err) {
       logError('Error posting extension form:', err);
-      await safeReply(interaction,'❌ Failed to post the form. See console.', true);
+      console.error(err); 
+      await safeReply(interaction, `❌ Failed to post the form. Error: ${err.message || err}`, true);    
     }
   }
 };

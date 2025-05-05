@@ -16,7 +16,6 @@ module.exports = async function handleModal(client, interaction) {
     logInfo(`Modal submitted "${interaction.customId}" in guild ${guildId}`);
 
     if (interaction.customId === 'extensionForm') {
-      // pass config so form handler can post to the correct apiUrl
       return handleFormSubmission(interaction, config);
     }
 
