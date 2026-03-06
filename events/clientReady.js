@@ -1,10 +1,8 @@
 module.exports = {
-  name: "ready",
+  name: "clientReady",
   once: true,
   execute(client) {
     const { PresenceUpdateStatus } = require("discord.js");
-
-    console.log(`Ready! Logged in as ${client.user.tag}`);
 
     client.user.setPresence({
       activities: [{ name: "Dragon Age" }],
