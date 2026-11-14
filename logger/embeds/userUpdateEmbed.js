@@ -15,7 +15,7 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
         })
         .setDescription(`${newMember} has boosted the server!`)
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 
@@ -30,7 +30,7 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
         })
         .setDescription(`${newMember} has stopped boosting the server.`)
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 
@@ -46,10 +46,10 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
         })
         .addFields(
           { name: "Before", value: oldMember.user.username },
-          { name: "After", value: newMember.user.username }
+          { name: "After", value: newMember.user.username },
         )
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 
@@ -65,11 +65,11 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
         })
         .addFields(
           { name: "Before", value: oldMember.user.displayAvatarURL() },
-          { name: "After", value: newMember.user.displayAvatarURL() }
+          { name: "After", value: newMember.user.displayAvatarURL() },
         )
         .setImage(newMember.user.displayAvatarURL({ size: 1024 }))
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 
@@ -94,7 +94,7 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
           value: addedRoles.map((r) => r.toString()).join(", "),
         })
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 
@@ -112,7 +112,7 @@ function buildUserUpdateEmbeds(oldMember, newMember) {
           value: removedRoles.map((r) => r.toString()).join(", "),
         })
         .setFooter({ text: `User ID: ${newMember.id}` })
-        .setTimestamp()
+        .setTimestamp(),
     );
   }
 

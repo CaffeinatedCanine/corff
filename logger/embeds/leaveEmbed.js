@@ -41,7 +41,7 @@ function buildLeaveEmbed(member, leaveType, executor, reason) {
         value: member.joinedTimestamp
           ? `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>`
           : "Unknown",
-      }
+      },
     )
     .setThumbnail(member.user.displayAvatarURL({ size: 1024 }))
     .setTimestamp();

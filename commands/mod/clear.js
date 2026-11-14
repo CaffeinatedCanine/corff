@@ -12,19 +12,19 @@ module.exports = {
         .setDescription("Number of messages to delete (1-100)")
         .setRequired(false)
         .setMinValue(1)
-        .setMaxValue(100)
+        .setMaxValue(100),
     )
     .addUserOption((option) =>
       option
         .setName("target")
         .setDescription("Only delete messages from this user")
-        .setRequired(false)
+        .setRequired(false),
     )
     .addStringOption((option) =>
       option
         .setName("reason")
         .setDescription("Reason for deletion")
-        .setRequired(false)
+        .setRequired(false),
     ),
 
   async execute(interaction) {
@@ -39,7 +39,7 @@ module.exports = {
 
     if (!channel.isTextBased() || channel.isDMBased()) {
       return interaction.editReply(
-        "This command can only be used in text channels."
+        "This command can only be used in text channels.",
       );
     }
 
@@ -50,7 +50,7 @@ module.exports = {
 
       if (target) {
         messagesToDelete = messages.filter(
-          (msg) => msg.author.id === target.id
+          (msg) => msg.author.id === target.id,
         );
       }
 
@@ -69,18 +69,18 @@ module.exports = {
 
       const targetInfo = target ? ` from ${target.tag}` : "";
       await interaction.editReply(
-        `✅ Deleted ${deleted.size} message(s)${targetInfo}. Reason: ${reason}`
+        `✅ Deleted ${deleted.size} message(s)${targetInfo}. Reason: ${reason}`,
       );
     } catch (error) {
       console.error("Clear command error:", error);
 
       if (error.code === 50034) {
         await interaction.editReply(
-          "❌ Cannot delete messages older than 14 days."
+          "❌ Cannot delete messages older than 14 days.",
         );
       } else {
         await interaction.editReply(
-          "❌ Failed to delete messages. Check bot permissions."
+          "❌ Failed to delete messages. Check bot permissions.",
         );
       }
     }

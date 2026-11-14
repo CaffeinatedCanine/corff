@@ -5,7 +5,7 @@ function buildBulkDeleteEmbed(
   deletedMessages,
   targetUser,
   reason,
-  fullLogContent
+  fullLogContent,
 ) {
   const deleter = interaction.user;
   const channel = interaction.channel;
@@ -28,7 +28,7 @@ function buildBulkDeleteEmbed(
       iconURL: deleter.displayAvatarURL(),
     })
     .setDescription(
-      `**${deletedMessages.size}** messages deleted in ${channel}`
+      `**${deletedMessages.size}** messages deleted in ${channel}`,
     )
     .addFields(
       {
@@ -45,7 +45,7 @@ function buildBulkDeleteEmbed(
         name: "Reason",
         value: reason,
         inline: true,
-      }
+      },
     )
     .setFooter({ text: `User ID: ${deleter.id}` })
     .setTimestamp();
@@ -71,7 +71,7 @@ function buildBulkDeleteEmbed(
     files.push(
       new AttachmentBuilder(logBuffer, {
         name: `deleted-messages-${timestamp}.txt`,
-      })
+      }),
     );
 
     embed.addFields({

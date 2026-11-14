@@ -9,7 +9,7 @@ function buildEditEmbed(oldData, newMessage) {
     .setTitle(`Message Edited in <#${oldData.channelId}>`)
     .setColor("Orange")
     .setDescription(
-      `[Jump to Message](https://discord.com/channels/${oldData.guildId}/${oldData.channelId}/${oldData.messageId})`
+      `[Jump to Message](https://discord.com/channels/${oldData.guildId}/${oldData.channelId}/${oldData.messageId})`,
     )
     .setFooter({ text: `User ID: ${oldData.author?.id}` })
     .setTimestamp();
@@ -50,7 +50,7 @@ function buildEditEmbed(oldData, newMessage) {
       value: oldData.author
         ? `[${oldData.author.username}](https://discord.com/users/${oldData.author.id})`
         : "Unknown",
-    }
+    },
   );
 
   return embed;

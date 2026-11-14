@@ -41,7 +41,7 @@ async function buildDeleteEmbed(message, oldData, deleteType, executor) {
         value: oldData.author ? `[${authorName}](${authorProfile})` : "Unknown",
         inline: false,
       },
-      { name: "Created At", value: createdTimestamp, inline: false }
+      { name: "Created At", value: createdTimestamp, inline: false },
     )
     .setFooter({ text: `User ID: ${authorId}` })
     .setTimestamp();
