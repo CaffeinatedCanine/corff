@@ -2,15 +2,39 @@ require("dotenv").config();
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Events,
+  Partials,
+  Options,
+} = require("discord.js");
+const {
+  logMessageEdit,
+  logMessageDelete,
+  logUserUpdate,
+  logUserJoin,
+  logUserLeave,
+  logUserUpdateFromUserEvent,
+  cacheInvites,
+  setupLogger,
+} = require("./logger/index.js");
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildInvites, // Required for invite tracking
   ],
+  makeCache: Options.cacheWithLimits({
+    MessageManager: 10000,
+  }),
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 
 client.commands = new Collection();
@@ -26,7 +50,6 @@ for (const folder of commandFolders) {
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
-    // Set a new item in the Collection with the key as the command name and the value as the exported module
     if ("data" in command && "execute" in command) {
       client.commands.set(command.data.name, command);
     } else {
@@ -65,9 +88,49 @@ client.on("interactionCreate", async (interaction) => {
     console.error(error);
     await interaction.reply({
       content: "There was an error while executing this command!",
-      ephemeral: true,
+      flags: 64,
     });
   }
+});
+
+// Cache invites when bot joins a new guild
+client.on("guildCreate", async (guild) => {
+  await cacheInvites(guild);
+});
+
+// Cache invites when bot starts up
+client.on(Events.ClientReady, async (readyClient) => {
+  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+  setupLogger(client);
+
+  // Cache invites for all guilds
+  for (const guild of client.guilds.cache.values()) {
+    await cacheInvites(guild);
+  }
+});
+
+client.on("guildMemberAdd", (member) => {
+  logUserJoin(member);
+});
+
+client.on("guildMemberRemove", (member) => {
+  logUserLeave(member);
+});
+
+client.on("guildMemberUpdate", (oldMember, newMember) => {
+  logUserUpdate(oldMember, newMember);
+});
+
+client.on("userUpdate", (oldUser, newUser) => {
+  logUserUpdateFromUserEvent(oldUser, newUser);
+});
+
+client.on("messageUpdate", (oldMessage, newMessage) => {
+  logMessageEdit(oldMessage, newMessage);
+});
+
+client.on("messageDelete", (message) => {
+  logMessageDelete(message);
 });
 
 client.login(process.env.TOKEN);

@@ -7,12 +7,11 @@
     "start": "node deploy-commands.js && node index.js"
   },
   "dependencies": {
-    "@discordjs/builders": "^1.10.1",
-    "@discordjs/rest": "^2.4.3",
     "@eslint/js": "^9.20.0",
+    "better-sqlite3": "^12.6.2",
     "dayjs": "^1.11.13",
     "discord-api-types": "^0.37.119",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.25.1",
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
