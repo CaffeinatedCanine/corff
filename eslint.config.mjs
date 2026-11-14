@@ -1,30 +1,24 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import { fileURLToPath } from "node:url";
+import { defineConfig, globalIgnores } from "eslint/config";
+
+import eslint from "@eslint/js";
 import globals from "globals";
-import js from "@eslint/js";
-import path from "node:path";
+import prettier from "eslint-config-prettier";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
+export default defineConfig([
+  globalIgnores(["node_modules/"]),
 
-export default [
-  ...compat.extends("eslint:recommended"),
+  eslint.configs.recommended,
+
   {
     languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.browser,
-      },
-
-      ecmaVersion: "latest",
-      sourceType: "module",
+      globals: { ...globals.node },
     },
-    ignores: ["node_modules/*"],
-    rules: {},
+    rules: {
+      "no-var": "warn",
+      "prefer-const": "warn",
+    },
   },
-];
+
+  // Must be last: turns off any rules that conflict with Prettier.
+  prettier,
+]);
