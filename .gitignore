@@ -5,3 +5,4 @@ config.json
 .flaskenv*
 !.env.project
 !.env.vault
+automation/drafts/data/
