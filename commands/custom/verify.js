@@ -8,7 +8,7 @@ module.exports = {
       option
         .setName("member")
         .setDescription("Mention the member.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     .setDMPermission(false),
@@ -16,7 +16,7 @@ module.exports = {
   async execute(interaction) {
     const member = interaction.options.getMentionable("member");
     interaction.reply(
-      `${member} please be sure to submit your verification request by using the form above!`
+      `${member} please be sure to submit your verification request by using the form above!`,
     );
   },
 };

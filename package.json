@@ -4,19 +4,25 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "start": "node deploy-commands.js && node index.js"
   },
   "dependencies": {
-    "@eslint/js": "^9.20.0",
-    "better-sqlite3": "^12.6.2",
-    "dayjs": "^1.11.13",
-    "discord-api-types": "^0.37.119",
-    "discord.js": "^14.25.1",
-    "dotenv": "^16.4.7"
+    "@discordjs/builders": "^1.15.0",
+    "@discordjs/rest": "^2.6.3",
+    "better-sqlite3": "^13.2.0",
+    "dayjs": "^1.11.23",
+    "discord-api-types": "^0.38.59",
+    "discord.js": "^14.28.1",
+    "dotenv": "^18.0.10"
   },
   "devDependencies": {
-    "eslint": "^9.20.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.5.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
   }
 }

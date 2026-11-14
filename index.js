@@ -29,6 +29,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildInvites, // Required for invite tracking
   ],
   makeCache: Options.cacheWithLimits({
@@ -54,7 +55,7 @@ for (const folder of commandFolders) {
       client.commands.set(command.data.name, command);
     } else {
       console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
       );
     }
   }

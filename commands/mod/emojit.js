@@ -9,17 +9,17 @@ module.exports = {
       option
         .setName("name")
         .setDescription("Provide the name for the emoji.")
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption((option) =>
       option
         .setName("url")
         .setDescription("Provide the emoji or url for the emoji.")
-        .setRequired(true)
+        .setRequired(true),
     ),
   async execute(interaction) {
-    let emojiId = parseEmoji(interaction.options.getString("url")).id;
-    let emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}.png`;
+    const emojiId = parseEmoji(interaction.options.getString("url")).id;
+    const emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}.gif`;
 
     await interaction.guild.emojis
       .create({
@@ -30,7 +30,7 @@ module.exports = {
         interaction.reply({
           content: `Created new emoji with name ${emoji.name}!`,
           flags: MessageFlags.Ephemeral,
-        })
+        }),
       )
       .catch(console.error);
   },
