@@ -14,7 +14,7 @@ function buildJoinEmbed(member, usedInvite) {
       {
         name: "Account Created",
         value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>`,
-      }
+      },
     )
     .setThumbnail(member.user.displayAvatarURL({ size: 1024 }))
     .setTimestamp();

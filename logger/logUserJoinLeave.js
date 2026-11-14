@@ -8,7 +8,7 @@ async function cacheInvites(guild) {
   const botMember = guild.members.me;
   if (!botMember.permissions.has("ManageGuild")) {
     console.warn(
-      `⚠️  Missing "Manage Server" permission in ${guild.name} — invite tracking disabled`
+      `⚠️  Missing "Manage Server" permission in ${guild.name} — invite tracking disabled`,
     );
     return;
   }
@@ -17,7 +17,7 @@ async function cacheInvites(guild) {
     const invites = await guild.invites.fetch();
     inviteCache.set(
       guild.id,
-      new Map(invites.map((inv) => [inv.code, inv.uses]))
+      new Map(invites.map((inv) => [inv.code, inv.uses])),
     );
     console.log(`✅ Cached ${invites.size} invites for ${guild.name}`);
   } catch (error) {
@@ -26,7 +26,7 @@ async function cacheInvites(guild) {
     } else {
       console.error(
         `Failed to cache invites for ${guild.name}:`,
-        error.message
+        error.message,
       );
     }
   }
@@ -57,7 +57,7 @@ async function logUserJoin(member) {
 
       inviteCache.set(
         member.guild.id,
-        new Map(newInvites.map((inv) => [inv.code, inv.uses]))
+        new Map(newInvites.map((inv) => [inv.code, inv.uses])),
       );
     } catch (error) {
       console.error("Failed to track invite:", error.message);

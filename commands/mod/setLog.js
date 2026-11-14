@@ -16,14 +16,14 @@ module.exports = {
           { name: "User Updates", value: "userUpdate" },
           { name: "Join/Leave", value: "joinLeave" },
           { name: "Role Changes", value: "roles" },
-          { name: "Boosting", value: "boost" }
-        )
+          { name: "Boosting", value: "boost" },
+        ),
     )
     .addChannelOption((option) =>
       option
         .setName("channel")
         .setDescription("The channel to send logs to")
-        .setRequired(true)
+        .setRequired(true),
     ),
 
   async execute(interaction) {

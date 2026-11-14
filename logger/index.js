@@ -99,7 +99,7 @@ async function logMessageDelete(message) {
     } catch (auditError) {
       console.error(
         "Failed to fetch audit log for delete:",
-        auditError.message
+        auditError.message,
       );
     }
 
@@ -108,7 +108,7 @@ async function logMessageDelete(message) {
       message,
       oldData,
       deleteType,
-      executor
+      executor,
     );
 
     const files = [];
@@ -179,7 +179,7 @@ async function logBulkDelete(interaction, deletedMessages, targetUser, reason) {
           const buffer = await fetchImageBuffer(attachment.url);
           if (buffer) {
             imageFiles.push(
-              new AttachmentBuilder(buffer, { name: attachment.name })
+              new AttachmentBuilder(buffer, { name: attachment.name }),
             );
           }
         }
@@ -191,7 +191,7 @@ async function logBulkDelete(interaction, deletedMessages, targetUser, reason) {
       deletedMessages,
       targetUser,
       reason,
-      fullLogContent
+      fullLogContent,
     );
 
     const allFiles = [...imageFiles, ...files];
@@ -207,7 +207,8 @@ try {
   setupLogger = require("./setupLogger.js");
 } catch (err) {
   if (err.code !== "MODULE_NOT_FOUND") throw err;
-  setupLogger = () => console.warn("Logger setup skipped: ./setupLogger.js not found");
+  setupLogger = () =>
+    console.warn("Logger setup skipped: ./setupLogger.js not found");
 }
 
 module.exports = {
