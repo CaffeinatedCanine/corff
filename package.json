@@ -12,6 +12,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.15.0",
     "@discordjs/rest": "^2.6.3",
+    "better-sqlite3": "^13.2.0",
     "dayjs": "^1.11.23",
     "discord-api-types": "^0.38.59",
     "discord.js": "^14.28.1",
