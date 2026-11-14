@@ -7,17 +7,17 @@
     "start": "node deploy-commands.js && node index.js"
   },
   "dependencies": {
-    "@discordjs/builders": "^1.10.1",
-    "@discordjs/rest": "^2.4.3",
-    "@eslint/js": "^9.20.0",
-    "dayjs": "^1.11.13",
-    "discord-api-types": "^0.37.119",
-    "discord.js": "^14.18.0",
-    "dotenv": "^16.4.7"
+    "@discordjs/builders": "^1.15.0",
+    "@discordjs/rest": "^2.6.3",
+    "dayjs": "^1.11.23",
+    "discord-api-types": "^0.38.59",
+    "discord.js": "^14.28.1"
   },
   "devDependencies": {
-    "eslint": "^9.20.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.5.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1"
   }
 }
