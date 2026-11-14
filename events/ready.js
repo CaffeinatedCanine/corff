@@ -1,5 +1,5 @@
 module.exports = {
-  name: "ready",
+  name: "clientReady",
   once: true,
   execute(client) {
     const { PresenceUpdateStatus } = require("discord.js");
