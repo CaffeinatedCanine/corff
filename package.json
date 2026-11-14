@@ -4,6 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "register": "node dist/deploy-commands.js",
     "start": "node deploy-commands.js && node index.js"
   },
   "dependencies": {
