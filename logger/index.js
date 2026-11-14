@@ -206,7 +206,8 @@ let setupLogger;
 try {
   setupLogger = require("./setupLogger.js");
 } catch (err) {
-  setupLogger = () => console.log("Logger setup skipped");
+  if (err.code !== "MODULE_NOT_FOUND") throw err;
+  setupLogger = () => console.warn("Logger setup skipped: ./setupLogger.js not found");
 }
 
 module.exports = {
