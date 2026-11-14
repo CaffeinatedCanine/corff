@@ -19,7 +19,7 @@ module.exports = {
     ),
   async execute(interaction) {
     const emojiId = parseEmoji(interaction.options.getString("url")).id;
-    const emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}.png`;
+    const emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}.gif`;
 
     await interaction.guild.emojis
       .create({
