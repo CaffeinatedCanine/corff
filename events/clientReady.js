@@ -5,7 +5,7 @@ module.exports = {
     const { PresenceUpdateStatus } = require("discord.js");
 
     client.user.setPresence({
-      activities: [{ name: "Dragon Age" }],
+      activities: [{ name: "What can I get you?" }],
       status: PresenceUpdateStatus.Online,
     });
   },
