@@ -8,7 +8,7 @@ module.exports = {
       option
         .setName("options")
         .setDescription("Separate your options with a comma.")
-        .setRequired(true)
+        .setRequired(true),
     ),
 
   async execute(interaction) {
