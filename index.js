@@ -20,6 +20,7 @@ const {
   cacheInvites,
   setupLogger,
 } = require("./logger/index.js");
+const drafts = require("./automation/drafts");
 
 const client = new Client({
   intents: [
@@ -76,7 +77,25 @@ for (const file of eventFiles) {
   }
 }
 
+drafts.initDrafts(client);
+
 client.on("interactionCreate", async (interaction) => {
+  if (interaction.isButton() || interaction.isModalSubmit()) {
+    try {
+      await drafts.handleInteraction(interaction);
+    } catch (error) {
+      console.error("Draft interaction error:", error);
+      const content =
+        error.message || "There was an error while updating that draft.";
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply({ content }).catch(() => null);
+      } else {
+        await interaction.reply({ content, flags: 64 }).catch(() => null);
+      }
+    }
+    return;
+  }
+
   if (!interaction.isCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
