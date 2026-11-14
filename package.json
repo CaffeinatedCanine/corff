@@ -14,7 +14,8 @@
     "@discordjs/rest": "^2.6.3",
     "dayjs": "^1.11.23",
     "discord-api-types": "^0.38.59",
-    "discord.js": "^14.28.1"
+    "discord.js": "^14.28.1",
+    "dotenv": "^18.0.10"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
